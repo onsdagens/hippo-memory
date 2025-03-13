@@ -16,3 +16,12 @@ The memory address starts at 0 and can be incremented by 1 using button
 
 The value under the current address can be overwritten with 'hA7
 by pressing button 2.
+
+## Building
+
+To create a Vivado project run the `./init_project.sh`. We assume Vivado 2023.2, and Bender is installed.
+
+The included constraints and project settings assume a Digilent Arty A7 board.
+
+The project resulting from running the included script is expected to be synthesizeable and
+flashable to the Arty out-of-the-box.
