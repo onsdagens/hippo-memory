@@ -1,13 +1,11 @@
 module fpga_top (
     input logic sysclk,
 
-    output logic [3:0] led,
     output logic [3:0] led_r,
-    output logic [3:0] led_g,
     output logic [3:0] led_b,
 
-    input logic [3:0] sw,
-    input logic [3:0] btn
+    input logic [1:0] sw,
+    input logic [2:0] btn
 );
 
   logic clk;
@@ -27,7 +25,7 @@ module fpga_top (
 
 
   hippo_memory #(
-      .INIT_FILE("../MEM_FILE.mem")
+      .INIT_FILE("MEM_FILE.mem")
   ) memory (
       .clk_i(clk),
       .rst_i(sw[1]),
@@ -35,7 +33,7 @@ module fpga_top (
       .addr_i(mem_addr),
       .we_i  (mem_we),
 
-      .data_i(jtag_data_r),
+      .data_i('hA7),
 
       .data_o(mem_dout)
   );
@@ -56,6 +54,8 @@ module fpga_top (
   // by pressing button 2.
 
   logic button_released;
+  assign led_r = mem_dout[3:0];
+  assign led_b = mem_dout[7:4];
 
   always_ff @(posedge clk) begin
     if (sw[1]) begin

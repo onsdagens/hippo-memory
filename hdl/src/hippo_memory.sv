@@ -23,7 +23,7 @@ module hippo_memory #(
       assign we[i] = we_i;
     end : gen_we
   endgenerate
-  xilinx_sp_BRAM #(
+  sp_bram #(
       .INIT_FILE(INIT_FILE),
       .NB_COL(BRAM_WIDTH_BITS / 8),
       .RAM_DEPTH(BRAM_DEPTH)
