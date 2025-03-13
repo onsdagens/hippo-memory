@@ -2,14 +2,6 @@
 ## To use it in a project:
 ## - uncomment the lines corresponding to used pins
 ## - rename the used ports (in each line, after get_ports) according to the top level signal names in the project
-
-## BSCANE2 related clock definitions
-
-create_clock -period 20.000 -name DRCK -waveform {0.000 10.000} [get_pins jtag/BSCANE2_inst/DRCK]
-create_clock -period 20.000 -name TCK -waveform {0.000 10.000} [get_pins jtag/BSCANE2_inst/TCK]
-# create_clock -period 1.000 -name virtual_clock
-
-
 ## Clock signal 100 MHz
 
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports sysclk]

@@ -27,7 +27,7 @@ module fpga_top (
 
 
   hippo_memory #(
-      .INIT_FILE("../MEM_FILE.mem"),
+      .INIT_FILE("../MEM_FILE.mem")
   ) memory (
       .clk_i(clk),
       .rst_i(sw[1]),
