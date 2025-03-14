@@ -19,7 +19,11 @@ by pressing button 2.
 
 ## Building
 
-To create a Vivado project run the `./init_project.sh`. We assume Vivado 2023.2, and Bender is installed.
+To create a Vivado project run
+```
+vivado -mode tcl -source init_project.tcl
+```
+in this directory. We assume Vivado 2023.2, and Bender is installed.
 
 The included constraints and project settings assume a Digilent Arty A7 board.
 
