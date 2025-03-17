@@ -4,7 +4,11 @@
 module interleaved_memory
   import config_pkg::*;
   import mem_pkg::*;
-(
+#(
+    parameter string INIT_FILE = "",
+    parameter integer MEMORY_DEPTH_BYTES = 1024,
+    localparam integer AddrWidth = $clog2(BRAM_DEPTH)
+) (
     //input logic clk,
     input logic clk_i,
     //input logic reset,
@@ -14,7 +18,7 @@ module interleaved_memory
     //input logic sign_extend,
     input logic sign_extend_i,
     //input logic [DMemAddrWidth-1:0] addr,
-    input logic [DMemAddrWidth-1:0] addr_i,
+    input logic [AddrWidth-1:0] addr_i,
     //input logic [31:0] data_in,
     input logic [31:0] data_i,
     //input logic write_enable,
@@ -22,7 +26,7 @@ module interleaved_memory
     //output logic [31:0] data_out
     output logic [31:0] data_o
 );
-  logic [DMemAddrWidth-1:0] address_clocked;
+  logic [AddrWidth-1:0] address_clocked;
   mem_width_t width_clocked;
   logic sign_extend_clocked;
   logic [7:0] block_0_dout;
@@ -33,17 +37,18 @@ module interleaved_memory
   logic [7:0] block_1_din;
   logic [7:0] block_2_din;
   logic [7:0] block_3_din;
-  logic [DMemAddrWidth-2:0] block_0_addr;
-  logic [DMemAddrWidth-2:0] block_1_addr;
-  logic [DMemAddrWidth-2:0] block_2_addr;
-  logic [DMemAddrWidth-2:0] block_3_addr;
+  logic [AddrWidth-2:0] block_0_addr;
+  logic [AddrWidth-2:0] block_1_addr;
+  logic [AddrWidth-2:0] block_2_addr;
+  logic [AddrWidth-2:0] block_3_addr;
   logic block_0_we;
   logic block_1_we;
   logic block_2_we;
   logic block_3_we;
 
   hippo_memory #(
-      .MemFileName("data_0.mem")
+      .INIT_FILE (INIT_FILE),
+      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
   ) block_0 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -53,7 +58,8 @@ module interleaved_memory
       .data_o(block_0_dout)
   );
   hippo_memory #(
-      .MemFileName("data_1.mem")
+      .INIT_FILE (INIT_FILE),
+      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
   ) block_1 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -63,7 +69,8 @@ module interleaved_memory
       .data_o(block_1_dout)
   );
   hippo_memory #(
-      .MemFileName("data_2.mem")
+      .INIT_FILE (INIT_FILE),
+      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
   ) block_2 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -73,7 +80,8 @@ module interleaved_memory
       .data_o(block_2_dout)
   );
   hippo_memory #(
-      .MemFileName("data_3.mem")
+      .INIT_FILE (INIT_FILE),
+      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
   ) block_3 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -99,10 +107,10 @@ module interleaved_memory
     block_2_we = 0;
     block_3_we = 0;
     if (addr % 4 == 1) begin
-      block_0_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_1_addr = addr_i[DMemAddrWidth-1:2];
-      block_2_addr = addr_i[DMemAddrWidth-1:2];
-      block_3_addr = addr_i[DMemAddrWidth-1:2];
+      block_0_addr = addr_i[AddrWidth-1:2] + 1;
+      block_1_addr = addr_i[AddrWidth-1:2];
+      block_2_addr = addr_i[AddrWidth-1:2];
+      block_3_addr = addr_i[AddrWidth-1:2];
       block_0_din  = data_i[31:24];
       block_1_din  = data_i[7:0];
       block_2_din  = data_i[15:8];
@@ -136,10 +144,10 @@ module interleaved_memory
         endcase
       end
     end else if (addr_i % 4 == 2) begin
-      block_0_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_1_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_2_addr = addr_i[DMemAddrWidth-1:2];
-      block_3_addr = addr_i[DMemAddrWidth-1:2];
+      block_0_addr = addr_i[AddrWidth-1:2] + 1;
+      block_1_addr = addr_i[AddrWidth-1:2] + 1;
+      block_2_addr = addr_i[AddrWidth-1:2];
+      block_3_addr = addr_i[AddrWidth-1:2];
       block_0_din  = data_i[23:16];
       block_1_din  = data_i[31:24];
       block_2_din  = data_i[7:0];
@@ -171,10 +179,10 @@ module interleaved_memory
         end
       endcase
     end else if (addr_i % 4 == 3) begin
-      block_0_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_1_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_2_addr = addr_i[DMemAddrWidth-1:2] + 1;
-      block_3_addr = addr_i[DMemAddrWidth-1:2];
+      block_0_addr = addr_i[AddrWidth-1:2] + 1;
+      block_1_addr = addr_i[AddrWidth-1:2] + 1;
+      block_2_addr = addr_i[AddrWidth-1:2] + 1;
+      block_3_addr = addr_i[AddrWidth-1:2];
       block_0_din  = data_i[15:8];
       block_1_din  = data_i[23:16];
       block_2_din  = data_i[31:24];
@@ -206,10 +214,10 @@ module interleaved_memory
         end
       endcase
     end else if (addr_i % 4 == 0) begin
-      block_0_addr = addr_i[DMemAddrWidth-1:2];
-      block_1_addr = addr_i[DMemAddrWidth-1:2];
-      block_2_addr = addr_i[DMemAddrWidth-1:2];
-      block_3_addr = addr_i[DMemAddrWidth-1:2];
+      block_0_addr = addr_i[AddrWidth-1:2];
+      block_1_addr = addr_i[AddrWidth-1:2];
+      block_2_addr = addr_i[AddrWidth-1:2];
+      block_3_addr = addr_i[AddrWidth-1:2];
       block_0_din  = data_i[7:0];
       block_1_din  = data_i[15:8];
       block_2_din  = data_i[23:16];
