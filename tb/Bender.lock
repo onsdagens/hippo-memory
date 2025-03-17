@@ -1,0 +1,7 @@
+packages:
+  hippo-memory:
+    revision: null
+    version: null
+    source:
+      Path: ..
+    dependencies: []
