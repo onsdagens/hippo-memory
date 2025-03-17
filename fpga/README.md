@@ -17,6 +17,9 @@ The memory address starts at 0 and can be incremented by 1 using button
 The value under the current address can be overwritten with 'hA7
 by pressing button 2.
 
+A word-wide write of the value 'h0DEFACED at the current address can be
+done by pressing button 3.
+
 ## Building
 
 To create a Vivado project run
