@@ -13,6 +13,7 @@ set_false_path -from [get_ports sw[1] ]
 set_false_path -from [get_ports btn[0] ]
 set_false_path -from [get_ports btn[1] ]
 set_false_path -from [get_ports btn[2] ]
+set_false_path -from [get_ports btn[3] ]
 
 set_false_path -to [get_ports led_r[0] ]
 set_false_path -to [get_ports led_r[1] ]
@@ -31,6 +32,7 @@ set_property -dict {PACKAGE_PIN C11 IOSTANDARD LVCMOS33}    [get_ports sw[1]]
 set_property -dict {PACKAGE_PIN D9 IOSTANDARD LVCMOS33} [get_ports btn[0] ]
 set_property -dict {PACKAGE_PIN C9 IOSTANDARD LVCMOS33} [get_ports btn[1] ]
 set_property -dict {PACKAGE_PIN B9 IOSTANDARD LVCMOS33} [get_ports btn[2] ]
+set_property -dict {PACKAGE_PIN B8 IOSTANDARD LVCMOS33} [get_ports btn[3] ]
 
 ## LEDs 
 set_property -dict {PACKAGE_PIN G6 IOSTANDARD LVCMOS33} [get_ports led_r[0] ]

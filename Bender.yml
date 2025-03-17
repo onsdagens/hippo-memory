@@ -1,6 +1,3 @@
-# A more detailed description of the manifest format `Bender.yml` can be found here:
-# https://github.com/pulp-platform/bender#manifest-format-benderyml
-
 package:
   name: hippo-memory
   authors:
@@ -9,9 +6,7 @@ package:
 dependencies:
 
 sources:
+  - ./hdl/src/mem_cfg_pkg.sv
+  - ./hdl/src/interleaved_memory.sv
   - ./hdl/src/hippo_memory.sv
   - ./hdl/src/sp_bram.sv
-  # Source files grouped in levels. Files in level 0 have no dependencies on files in this
-  # package. Files in level 1 only depend on files in level 0, files in level 2 on files in
-  # levels 1 and 0, etc. Files within a level are ordered alphabetically.
-  # Level 0

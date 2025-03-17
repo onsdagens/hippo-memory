@@ -1,13 +1,9 @@
-// mem
-`timescale 1ns / 1ps
-
 module interleaved_memory
-  import config_pkg::*;
-  import mem_pkg::*;
+  import mem_cfg_pkg::*;
 #(
     parameter string INIT_FILE = "",
     parameter integer MEMORY_DEPTH_BYTES = 1024,
-    localparam integer AddrWidth = $clog2(BRAM_DEPTH)
+    localparam integer AddrWidth = $clog2(MEMORY_DEPTH_BYTES)
 ) (
     //input logic clk,
     input logic clk_i,
@@ -26,7 +22,8 @@ module interleaved_memory
     //output logic [31:0] data_out
     output logic [31:0] data_o
 );
-  logic [AddrWidth-1:0] address_clocked;
+  // here we only actually care about the modulo 4, so we just use the lowest bits...
+  logic [1:0] address_clocked;
   mem_width_t width_clocked;
   logic sign_extend_clocked;
   logic [7:0] block_0_dout;
@@ -37,10 +34,10 @@ module interleaved_memory
   logic [7:0] block_1_din;
   logic [7:0] block_2_din;
   logic [7:0] block_3_din;
-  logic [AddrWidth-2:0] block_0_addr;
-  logic [AddrWidth-2:0] block_1_addr;
-  logic [AddrWidth-2:0] block_2_addr;
-  logic [AddrWidth-2:0] block_3_addr;
+  logic [AddrWidth-3:0] block_0_addr;
+  logic [AddrWidth-3:0] block_1_addr;
+  logic [AddrWidth-3:0] block_2_addr;
+  logic [AddrWidth-3:0] block_3_addr;
   logic block_0_we;
   logic block_1_we;
   logic block_2_we;
@@ -48,7 +45,7 @@ module interleaved_memory
 
   hippo_memory #(
       .INIT_FILE (INIT_FILE),
-      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
+      .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_0 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -59,7 +56,7 @@ module interleaved_memory
   );
   hippo_memory #(
       .INIT_FILE (INIT_FILE),
-      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
+      .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_1 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -70,7 +67,7 @@ module interleaved_memory
   );
   hippo_memory #(
       .INIT_FILE (INIT_FILE),
-      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
+      .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_2 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -81,7 +78,7 @@ module interleaved_memory
   );
   hippo_memory #(
       .INIT_FILE (INIT_FILE),
-      .BRAM_DEPTH(BRAM_DEPTH_BYTES / 4)
+      .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_3 (
       .clk_i (clk_i),
       .rst_i (rst_i),
@@ -92,21 +89,29 @@ module interleaved_memory
   );
   always_ff @(posedge clk_i) begin
     if (rst_i) begin
-      address_clocked <= 0;
+      address_clocked <= '0;
       width_clocked <= WORD;
-      sign_extend_clocked <= 0;
+      sign_extend_clocked <= '0;
     end
     sign_extend_clocked <= sign_extend_i;
     width_clocked <= width_i;
-    address_clocked <= addr_i;
+    address_clocked <= addr_i[1:0];
   end
   always_comb begin
     //this never happens since all possible modulo results are handled, but vivado still infers a latch if this is not defined
-    block_0_we = 0;
-    block_1_we = 0;
-    block_2_we = 0;
-    block_3_we = 0;
-    if (addr % 4 == 1) begin
+    block_0_we   = 0;
+    block_1_we   = 0;
+    block_2_we   = 0;
+    block_3_we   = 0;
+    block_0_addr = 0;
+    block_1_addr = 0;
+    block_2_addr = 0;
+    block_3_addr = 0;
+    block_0_din  = 0;
+    block_1_din  = 0;
+    block_2_din  = 0;
+    block_3_din  = 0;
+    if (addr_i % 4 == 1) begin
       block_0_addr = addr_i[AddrWidth-1:2] + 1;
       block_1_addr = addr_i[AddrWidth-1:2];
       block_2_addr = addr_i[AddrWidth-1:2];
@@ -255,13 +260,16 @@ module interleaved_memory
       block_2_we = 0;
       block_3_we = 0;
     end
-    if (address_clocked % 4 == 1) begin
+    // again, this is covered, but let's stop the inferred latch
+    data_o = 0;
+    // we are looking at the lowest 2 bits, so no need to modulo 4
+    if (address_clocked == 1) begin
       data_o = {block_0_dout, block_3_dout, block_2_dout, block_1_dout};
-    end else if (address_clocked % 4 == 2) begin
+    end else if (address_clocked == 2) begin
       data_o = {block_1_dout, block_0_dout, block_3_dout, block_2_dout};
-    end else if (address_clocked % 4 == 3) begin
+    end else if (address_clocked == 3) begin
       data_o = {block_2_dout, block_1_dout, block_0_dout, block_3_dout};
-    end else if (address_clocked % 4 == 0) begin
+    end else if (address_clocked == 0) begin
       data_o = {block_3_dout, block_2_dout, block_1_dout, block_0_dout};
     end
     case (width_clocked)
