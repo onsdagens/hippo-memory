@@ -1,7 +1,10 @@
 module interleaved_memory
   import mem_cfg_pkg::*;
 #(
-    parameter string INIT_FILE = "",
+    parameter string INIT_FILE_B0 = "",
+    parameter string INIT_FILE_B1 = "",
+    parameter string INIT_FILE_B2 = "",
+    parameter string INIT_FILE_B3 = "",
     parameter integer MEMORY_DEPTH_BYTES = 1024,
     localparam integer AddrWidth = $clog2(MEMORY_DEPTH_BYTES)
 ) (
@@ -44,7 +47,7 @@ module interleaved_memory
   logic block_3_we;
 
   hippo_memory #(
-      .INIT_FILE (INIT_FILE),
+      .INIT_FILE (INIT_FILE_B0),
       .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_0 (
       .clk_i (clk_i),
@@ -55,7 +58,7 @@ module interleaved_memory
       .data_o(block_0_dout)
   );
   hippo_memory #(
-      .INIT_FILE (INIT_FILE),
+      .INIT_FILE (INIT_FILE_B1),
       .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_1 (
       .clk_i (clk_i),
@@ -66,7 +69,7 @@ module interleaved_memory
       .data_o(block_1_dout)
   );
   hippo_memory #(
-      .INIT_FILE (INIT_FILE),
+      .INIT_FILE (INIT_FILE_B2),
       .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_2 (
       .clk_i (clk_i),
@@ -77,7 +80,7 @@ module interleaved_memory
       .data_o(block_2_dout)
   );
   hippo_memory #(
-      .INIT_FILE (INIT_FILE),
+      .INIT_FILE (INIT_FILE_B3),
       .BRAM_DEPTH(MEMORY_DEPTH_BYTES / 4)
   ) block_3 (
       .clk_i (clk_i),

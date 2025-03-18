@@ -4,7 +4,7 @@ This directory contains a synthesizeable minimal usage example of Hippo memory.
 
 The example shows an interface with the memory via buttons.
 This is designed around the Arty A7 dev board.
-The memory is instantiated with the contents of the file "MEM_FILE.mem"
+The memory is instantiated with the contents of the files "MEM_Bx.mem", where x is the id of the block.
 
 The content of the memory at the current address is displayed
 Using the RGB LEDs as a bit display. I.e. LED[0] Red channel corresponds

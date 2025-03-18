@@ -18,4 +18,7 @@ sources:
   # Board specific IP. In this case a clock.
   - ./hdl/ip/clk_wiz_0/clk_wiz_0.xci
   # The file containing data for memory initialization
-  - ./MEM_FILE.mem
+  - ./MEM_B0.mem
+  - ./MEM_B1.mem
+  - ./MEM_B2.mem
+  - ./MEM_B3.mem

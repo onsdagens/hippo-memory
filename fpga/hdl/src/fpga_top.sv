@@ -28,7 +28,10 @@ module fpga_top
   mem_width_t mem_width;
 
   interleaved_memory #(
-      .INIT_FILE("MEM_FILE.mem")
+      .INIT_FILE_B0("MEM_B0.mem"),
+      .INIT_FILE_B1("MEM_B1.mem"),
+      .INIT_FILE_B2("MEM_B2.mem"),
+      .INIT_FILE_B3("MEM_B3.mem")
   ) memory (
       .clk_i(clk),
       .rst_i(sw[1]),
