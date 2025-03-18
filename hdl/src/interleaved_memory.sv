@@ -120,34 +120,32 @@ module interleaved_memory
       block_1_din  = data_i[7:0];
       block_2_din  = data_i[15:8];
       block_3_din  = data_i[23:16];
-      if (write_enable_i) begin
-        case (width_i)
-          BYTE: begin
-            block_0_we = 0;
-            block_1_we = 1;
-            block_2_we = 0;
-            block_3_we = 0;
-          end
-          HALFWORD: begin
-            block_0_we = 0;
-            block_1_we = 1;
-            block_2_we = 1;
-            block_3_we = 0;
-          end
-          WORD: begin
-            block_0_we = 1;
-            block_1_we = 1;
-            block_2_we = 1;
-            block_3_we = 1;
-          end
-          default: begin
-            block_0_we = 0;
-            block_1_we = 0;
-            block_2_we = 0;
-            block_3_we = 0;
-          end
-        endcase
-      end
+      case (width_i)
+        BYTE: begin
+          block_0_we = 0;
+          block_1_we = 1;
+          block_2_we = 0;
+          block_3_we = 0;
+        end
+        HALFWORD: begin
+          block_0_we = 0;
+          block_1_we = 1;
+          block_2_we = 1;
+          block_3_we = 0;
+        end
+        WORD: begin
+          block_0_we = 1;
+          block_1_we = 1;
+          block_2_we = 1;
+          block_3_we = 1;
+        end
+        default: begin
+          block_0_we = 0;
+          block_1_we = 0;
+          block_2_we = 0;
+          block_3_we = 0;
+        end
+      endcase
     end else if (addr_i % 4 == 2) begin
       block_0_addr = addr_i[AddrWidth-1:2] + 1;
       block_1_addr = addr_i[AddrWidth-1:2] + 1;
